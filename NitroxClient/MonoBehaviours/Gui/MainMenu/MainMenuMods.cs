@@ -3,6 +3,7 @@ using NitroxClient.Unity.Helper;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using NitroxModel.Logger;
 
 namespace NitroxClient.MonoBehaviours.Gui.MainMenu
 {
@@ -10,6 +11,7 @@ namespace NitroxClient.MonoBehaviours.Gui.MainMenu
     {
         private void OnEnable()
         {
+            Log.Debug(System.Environment.StackTrace);
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
         }
 
@@ -20,6 +22,7 @@ namespace NitroxClient.MonoBehaviours.Gui.MainMenu
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode loadMode)
         {
+            Log.Debug("Scene loaded: " + scene.name);
             if (scene.name == "XMenu")
             {
                 MultiplayerMenuMods();
@@ -29,6 +32,7 @@ namespace NitroxClient.MonoBehaviours.Gui.MainMenu
 
         private void MultiplayerMenuMods()
         {
+            Log.Info("MultiplayerMenuMods() reached");
             GameObject startButton = GameObjectHelper.RequireGameObject("Menu canvas/Panel/MainMenu/PrimaryOptions/MenuButtons/ButtonPlay");
             GameObject showLoadedMultiplayer = Instantiate(startButton, startButton.transform.parent);
             showLoadedMultiplayer.name = "ButtonMultiplayer";

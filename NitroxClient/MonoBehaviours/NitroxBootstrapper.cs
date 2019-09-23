@@ -1,4 +1,6 @@
-﻿using NitroxClient.MonoBehaviours.Gui.MainMenu;
+﻿using System;
+using NitroxClient.MonoBehaviours.Gui.MainMenu;
+using NitroxModel.Logger;
 using UnityEngine;
 
 namespace NitroxClient.MonoBehaviours
@@ -7,15 +9,23 @@ namespace NitroxClient.MonoBehaviours
     {
         public void Awake()
         {
-            DontDestroyOnLoad(gameObject);
-            gameObject.AddComponent<SceneCleanerPreserve>();
-            gameObject.AddComponent<MainMenuMods>();
+            try
+            {
+                DontDestroyOnLoad(gameObject);
+                gameObject.AddComponent<SceneCleanerPreserve>();
+                gameObject.AddComponent<MainMenuMods>();
 
 #if DEBUG
             AttachWarpToCommand();
 #endif
 
-            CreateDebugger();
+                CreateDebugger();
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex.StackTrace + "\n" + ex.Message);
+                return;
+            }
         }
 
         private void AttachWarpToCommand()

@@ -166,6 +166,7 @@ namespace NitroxLauncher
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WorkingDirectory = subnauticaPath;
             startInfo.FileName = subnauticaExe;
+            startInfo.Arguments = "-vrmode none";
 
             gameProcess = Process.Start(startInfo);            
         }

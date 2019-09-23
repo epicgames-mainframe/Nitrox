@@ -37,9 +37,11 @@ namespace NitroxPatcher
             Log.Info("Patching Subnautica...");
 
             // Enabling this creates a log file on your desktop (why there?), showing the emitted IL instructions.
-            HarmonyInstance.DEBUG = false;
+            HarmonyInstance.DEBUG = true;
 
-            IEnumerable<NitroxPatch> discoveredPatches = Assembly.GetExecutingAssembly()
+            try
+            {
+                IEnumerable<NitroxPatch> discoveredPatches = Assembly.GetExecutingAssembly()
                 .GetTypes()
                 .Where(p => typeof(NitroxPatch).IsAssignableFrom(p) &&
                             p.IsClass && !p.IsAbstract
@@ -47,15 +49,22 @@ namespace NitroxPatcher
                 .Select(Activator.CreateInstance)
                 .Cast<NitroxPatch>();
 
-            IEnumerable<IGrouping<string, NitroxPatch>> splittedPatches = discoveredPatches.GroupBy(p => p.GetType().Namespace);
+                IEnumerable<IGrouping<string, NitroxPatch>> splittedPatches = discoveredPatches.GroupBy(p => p.GetType().Namespace);
 
-            splittedPatches.First(g => g.Key == "NitroxPatcher.Patches.Persistent").ForEach(p =>
+                splittedPatches.First(g => g.Key == "NitroxPatcher.Patches.Persistent").ForEach(p =>
+                {
+                    Log.Info("Applying persistent patch " + p.GetType());
+                    p.Patch(harmony);
+                });
+
+                patches = splittedPatches.First(g => g.Key == "NitroxPatcher.Patches").ToArray();
+            }
+            catch(Exception ex)
             {
-                Log.Info("Applying persistent patch " + p.GetType());
-                p.Patch(harmony);
-            });
-
-            patches = splittedPatches.First(g => g.Key == "NitroxPatcher.Patches").ToArray();
+                Log.Error(ex.StackTrace + "\n" + ex.Message);
+                return;
+            }
+            
             Multiplayer.OnBeforeMultiplayerStart += Apply;
             Multiplayer.OnAfterMultiplayerEnd += Restore;
             Log.Info("Completed patching using " + Assembly.GetExecutingAssembly().FullName);
