@@ -58,23 +58,25 @@ namespace NitroxPatcher
                 });
 
                 patches = splittedPatches.First(g => g.Key == "NitroxPatcher.Patches").ToArray();
+
+                Multiplayer.OnBeforeMultiplayerStart += Apply;
+                Multiplayer.OnAfterMultiplayerEnd += Restore;
+                Log.Info("Completed patching using " + Assembly.GetExecutingAssembly().FullName);
+
+                Log.Info("Enabling developer console.");
+                DevConsole.disableConsole = false;
+                Application.runInBackground = true;
+                Log.Debug($"IsPlaying: {Application.isPlaying}");
+                Log.Debug($"IsEditor: {Application.isEditor}");
+                Log.Info($"Unity run in background set to {Application.runInBackground.ToString().ToUpperInvariant()}.");
+
+                ApplyNitroxBehaviours();
             }
             catch(Exception ex)
             {
                 Log.Error(ex.StackTrace + "\n" + ex.Message);
                 return;
             }
-            
-            Multiplayer.OnBeforeMultiplayerStart += Apply;
-            Multiplayer.OnAfterMultiplayerEnd += Restore;
-            Log.Info("Completed patching using " + Assembly.GetExecutingAssembly().FullName);
-
-            Log.Info("Enabling developer console.");
-            DevConsole.disableConsole = false;
-            Application.runInBackground = true;
-            Log.Info($"Unity run in background set to {Application.runInBackground.ToString().ToUpperInvariant()}.");
-
-            ApplyNitroxBehaviours();
         }
 
         public static void Apply()

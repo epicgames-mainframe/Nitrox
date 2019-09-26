@@ -140,9 +140,11 @@ namespace NitroxClient.MonoBehaviours
 
         private void OnEnable()
         {
+            Log.Debug("NitroxDebugManager.OnEnable()");
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
             SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+            Log.Debug("DebuggerManager subscribed to SceneManager events");
         }
 
         private void OnDisable()

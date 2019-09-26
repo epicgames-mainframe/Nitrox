@@ -11,33 +11,38 @@ namespace NitroxClient.MonoBehaviours.Gui.MainMenu
     {
         private void OnEnable()
         {
-            Log.Debug(System.Environment.StackTrace);
+            Log.Debug("MainMenuMods.OnEnable()");
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+            ;
+            Log.Debug("Subscribed to sceneLoaded event");
         }
 
         private void OnDisable()
         {
+            Log.Debug("MainMenuMods.OnDisable()");
             SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+            Log.Debug("Unsubscribed from sceneLoaded event");
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode loadMode)
         {
-            Log.Debug("Scene loaded: " + scene.name);
+            Log.Debug("Scene loaded: '" + scene.name + "'");
             if (scene.name == "XMenu")
             {
+                Log.Debug("Initiating multiplayer menu mod");
                 MultiplayerMenuMods();
-                DiscordController.Main.InitDRPMenu();
             }
         }
 
         private void MultiplayerMenuMods()
         {
-            Log.Info("MultiplayerMenuMods() reached");
+            Log.Debug("MultiplayerMenuMods() reached");
             GameObject startButton = GameObjectHelper.RequireGameObject("Menu canvas/Panel/MainMenu/PrimaryOptions/MenuButtons/ButtonPlay");
             GameObject showLoadedMultiplayer = Instantiate(startButton, startButton.transform.parent);
             showLoadedMultiplayer.name = "ButtonMultiplayer";
             Text buttonText = showLoadedMultiplayer.RequireGameObject("Circle/Bar/Text").GetComponent<Text>();
             buttonText.text = "Multiplayer";
+            Log.Warn("Overriden Translation Updater! no clue what this might cause");
             Destroy(buttonText.GetComponent<TranslationLiveUpdate>());
             showLoadedMultiplayer.transform.SetSiblingIndex(3);
             Button showLoadedMultiplayerButton = showLoadedMultiplayer.GetComponent<Button>();
@@ -57,6 +62,7 @@ namespace NitroxClient.MonoBehaviours.Gui.MainMenu
             panel.LoadedMultiplayerRef = LoadedMultiplayer;
 
             rightSide.groups.Add(LoadedMultiplayer);
+            //DiscordController.Main.InitDRPMenu();
         }
 
         private void ShowMultiplayerMenu()

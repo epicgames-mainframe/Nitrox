@@ -11,6 +11,7 @@ namespace NitroxClient.MonoBehaviours
         {
             try
             {
+                Log.Debug("NitroxBootstrapper.Awake()");
                 DontDestroyOnLoad(gameObject);
                 gameObject.AddComponent<SceneCleanerPreserve>();
                 gameObject.AddComponent<MainMenuMods>();
